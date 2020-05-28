@@ -25,35 +25,18 @@ def parse_arguments():
                         default=[],
                         help="URL to download content from (single download)")
 
-    parser.add_argument('--url',
-                        type=str,
-                        default=None,
-                        help="Enter the URLs to download content from.")
-
-    parser.add_argument('-r', '--redirects',
-                        action='store_true',
-                        help="Flag to enable follow redirects in web pages.")
-
     parser.add_argument('-o', '--output',
                         type=str,
                         default=None,
                         help="Output path to store the results")
 
-    parser.add_argument('-u', '--unverified',
+    parser.add_argument('-u', '--disable-verify-ssl',
                         action='store_false',
-                        default=False,
-                        help="Select to allow unverified SSL certificates.")
+                        help="Flag to disable SSL certificate verification.")
 
-    parser.add_argument('-m', '--max_retries',
-                        type=int,
-                        default=0,
-                        help=("Set the max number of retries (default 0 to fail"
-                              " on first retry)."))
-
-    parser.add_argument('-b', '--backoff',
-                        type=float,
-                        default=0,
-                        help="Set the backoff factor (default 0).")
+    parser.add_argument('--keep-html',
+                        action='store_true',
+                        help="Flag to enable follow redirects in web pages.")
 
     return parser.parse_args()
 
@@ -70,8 +53,8 @@ def main():
 
     loop = asyncio.get_event_loop()
 
-    args = [(HttpClient(verify=not args.unverified,
-                        follow_redirects=args.redirects,
+    args = [(HttpClient(verify=args.disable_verify_ssl,
+                        keep_html=args.keep_html,
                         output_path=output_path),
              url) for url in urls]
 
