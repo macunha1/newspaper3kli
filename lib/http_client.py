@@ -46,21 +46,24 @@ class HttpClient:
             article.parse()
             article.nlp()
 
+            article.set_meta_data({
+                'title': article.title,
+                'keywords': article.keywords,
+                'authors': article.authors,
+                'images': list(article.images), # Convert set to list
+                'description': article.meta_description,
+                'date': article.publish_date and
+                        article.publish_date.isoformat(),
+                'url': url
+            })
+
             raw_path = self.build_filepath(title=article.title)
 
             with open("%s.html" % raw_path, "w") as htmldesc:
                 htmldesc.write(article.article_html or article.text)
 
-            with open("%s.json" % raw_path, "w") as metadata:
-                json.dump({
-                    'title': article.title,
-                    'keywords': article.keywords,
-                    'authors': article.authors,
-                    'images': article.images,
-                    'description': article.meta_description,
-                    'date': article.publish_date.isoformat(),
-                    'url': url
-                }, metadata)
+            with open("%s.json" % raw_path, "w") as metadatadesc:
+                json.dump(article.meta_data, metadatadesc)
 
         except (ConnectionError,
                 InvalidSchema,
