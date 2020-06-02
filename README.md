@@ -16,15 +16,9 @@ properly.
 
 ## Installation
 
-While the setupscript for setuptools isn't ready you can install it
-manually using
-
 ```bash
 # assuming your OS has pip3 as default
-pip3 install -r requirements.txt
-ln -s ${PWD}/newspaper3kli.py /usr/local/bin/newspaper3kli
-# for the user path only (considering you already have it in $PATH)
-ln -s ${PWD}/newspaper3kli.py ${HOME}/.local/bin/newspaper3kli
+pip install newspaper3kli==0.1.0
 ```
 
 ## Usage

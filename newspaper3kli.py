@@ -28,7 +28,8 @@ def parse_arguments():
     parser.add_argument('-o', '--output',
                         type=str,
                         default=None,
-                        help="Output path to store the results")
+                        help=('Output path to store the results.'
+                              'Defaults to "Downloads" directory'))
 
     parser.add_argument('-u', '--disable-verify-ssl',
                         action='store_false',
@@ -48,8 +49,14 @@ def main():
         else args.urls
 
     output_path = (args.output or
-                   os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                "output"))
+                   # fallback to ${HOME}/Downloads whether using XDG or not
+                   os.path.join(os.getenv("XDG_DOWNLOAD_DIR",
+                                          os.path.join(os.getenv("HOME"),
+                                                       "Downloads")),
+                                "newspaper3k"))
+
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
 
     loop = asyncio.get_event_loop()
 
