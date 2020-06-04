@@ -7,7 +7,7 @@ def read_file(name):
 
 
 setup(name="newspaper3kli",
-      version="0.1.0",
+      version="0.1.1",
       author="Matheus Cunha",
       author_email="macunha@protonmail.com",
       description=("A tiny layer on top of Newspaper3k with support for "
@@ -42,10 +42,8 @@ setup(name="newspaper3kli",
 
       data_files=[('', ['UNLICENSE'])],
 
-      # Fails with -> 400 Client Error: The description failed to render
-      # in the default format of reStructuredText.
-      # See https://pypi.org/help/#description-content-type
-      # long_description=read_file("README.md"),
+      long_description=read_file("README.md"),
+      long_description_content_type="text/markdown",
 
       py_modules=["newspaper3kli"],
       entry_points={

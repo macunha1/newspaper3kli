@@ -25,7 +25,7 @@ pip install newspaper3kli==0.1.0
 
 Overview of available parameters
 
-```
+```bash
 usage: newspaper3kli [-h] [--url URL] [-r] [-o OUTPUT] [-u] [-m MAX_RETRIES]
                      [-b BACKOFF]
                      [urls [urls ...]]
@@ -62,7 +62,7 @@ TXT is the simplest file format for reading with Newspaper3kli.
 
 Assuming the txt file has the following content (line delimited URLs):
 
-```
+```text
 https://hello.world/article/2020
 https://hello.world/article/2019
 ```
