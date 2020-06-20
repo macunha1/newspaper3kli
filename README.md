@@ -26,25 +26,18 @@ pip install newspaper3kli==0.1.0
 Overview of available parameters
 
 ```bash
-usage: newspaper3kli [-h] [--url URL] [-r] [-o OUTPUT] [-u] [-m MAX_RETRIES]
-                     [-b BACKOFF]
-                     [urls [urls ...]]
+usage: newspaper3kli [-h] [-o OUTPUT] [-u] [--keep-html] [urls [urls ...]]
 
 positional arguments:
   urls                  URL to download content from (single download)
 
 optional arguments:
   -h, --help            show this help message and exit
-  --url URL             Enter the URLs to download content from.
-  -r, --redirects       Flag to enable follow redirects in web pages.
   -o OUTPUT, --output OUTPUT
                         Output path to store the results
-  -u, --unverified      Select to allow unverified SSL certificates.
-  -m MAX_RETRIES, --max_retries MAX_RETRIES
-                        Set the max number of retries (default 0 to fail on
-                        first retry).
-  -b BACKOFF, --backoff BACKOFF
-                        Set the backoff factor (default 0).
+  -u, --disable-verify-ssl
+                        Flag to disable SSL certificate verification.
+  --keep-html           Flag to enable follow redirects in web pages.
 ```
 
 ## Executing
@@ -87,7 +80,7 @@ Processing
 
 ```bash
 # note that $1 corresponds to the URLs column number, change to yours
-cat /path/to/this/file.csv | awk -F, 'NR==50{ print $1 }' | newspaper3kli
+cat /path/to/this/file.csv | awk -F, '{ print $1 }' | newspaper3kli
 ```
 
 For any other character-delimited content, simple change from -F, (comma)
@@ -96,9 +89,9 @@ to the desired format, e.g.: -F\t for TSV
 ### Output path
 
 When no path is specified through `--output` parameter, the default path is
-`output` inside Newspaper3kli's directory. Files are created according to
-Article's name, and are stored in pairs:
+the `output` directory inside Newspaper3kli's installation directory.
 
+Files are created according to Article's name, and are stored in pairs:
 - JSON for metadata;
 - HTML for content;
 
