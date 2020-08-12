@@ -37,7 +37,7 @@ optional arguments:
                         Output path to store the results
   -u, --disable-verify-ssl
                         Flag to disable SSL certificate verification.
-  --keep-html           Flag to enable follow redirects in web pages.
+  --keep-html           Flag to save content with HTML..
 ```
 
 ## Executing

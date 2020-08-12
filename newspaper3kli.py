@@ -37,7 +37,7 @@ def parse_arguments():
 
     parser.add_argument('--keep-html',
                         action='store_true',
-                        help="Flag to enable follow redirects in web pages.")
+                        help="Flag to save content with HTML.")
 
     return parser.parse_args()
 
