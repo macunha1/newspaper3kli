@@ -146,3 +146,6 @@ output/
 # Local tooling
 .serena/
 .ruff_cache/
+.devenv/
+.direnv/
+result

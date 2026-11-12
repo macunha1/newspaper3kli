@@ -11,6 +11,21 @@ newspaper3kli --help
 
 To install this checkout, run `python -m pip install .`. The installed command is
 `newspaper3kli`; `python -m newspaper3kli` provides the same interface.
+Use a virtual environment to keep dependencies separate from system packages.
+See [the pip installation guide](docs/pip-install.md) for setup, upgrades, and
+installation from source (no Nix or uv required).
+
+With Nix (flakes enabled), build and install the standalone CLI from this checkout:
+
+```bash
+nix run . -- --help
+nix profile install .
+newspaper3kli --help
+```
+
+Nix supplies Python and the dependencies from `uv.lock`; no system Python or
+activated virtual environment is required. The profile exposes `newspaper3kli`.
+See [the Nix installation guide](docs/nix-build.md) for setup and usage.
 
 ## Usage
 

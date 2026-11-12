@@ -1,0 +1,41 @@
+name: Newspaper3kli CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    name: Validate Python CLI installation
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup
+      - name: Validate, build, and verify CLI
+        shell: bash
+        run: |
+          set -e
+          time nix develop --profile "${RUNNER_TEMP}/nix-devenv" --impure --no-update-lock-file \
+            --command devenv tasks run app:ci
+      - name: Check lockfiles stayed unchanged
+        run: git diff --exit-code -- flake.lock uv.lock
+      - name: Upload verified distributions
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: newspaper3kli-dist
+          path: |
+            dist/*.whl
+            dist/*.tar.gz
+          if-no-files-found: error
+          retention-days: 14
