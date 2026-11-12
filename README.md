@@ -1,102 +1,55 @@
 # Newspaper3kli
 
-_Newspaper3kli_ stands for the "kommand-line" interface over
-[Newspaper3k](https://newspaper.readthedocs.io/en/latest/).
+Download articles from URL arguments or a Unix pipeline. Requires Python 3.15.2+.
 
-A tiny layer on top of Newspaper3k with support for Unix-like
-executions and parallelism (using asyncio) to download bulks of
-articles faster.
-
-## Requirements
-
-In addition to the requirements, make sure you have `nltk`'s
-`punkt` package installed (via `nlkt.download()` in
-interactive Python) for Newspaper3k's `article.nlp()` to work
-properly.
-
-## Installation
+## Install
 
 ```bash
-# assuming your OS has pip3 as default
-pip install newspaper3kli==0.1.0
+python -m pip install newspaper3kli
+newspaper3kli --help
 ```
+
+To install this checkout, run `python -m pip install .`. The installed command is
+`newspaper3kli`; `python -m newspaper3kli` provides the same interface.
 
 ## Usage
 
-Overview of available parameters
-
 ```bash
-usage: newspaper3kli [-h] [-o OUTPUT] [-u] [--keep-html] [urls [urls ...]]
-
-positional arguments:
-  urls                  URL to download content from (single download)
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -o OUTPUT, --output OUTPUT
-                        Output path to store the results
-  -u, --disable-verify-ssl
-                        Flag to disable SSL certificate verification.
-  --keep-html           Flag to save content with HTML..
+newspaper3kli --output articles https://example.com/article
+cat urls.txt | newspaper3kli --output articles --concurrency 8
 ```
 
-## Executing
+Explicit URL arguments take precedence over piped input. Empty lines and duplicate
+URLs are ignored.
 
-### Passing URLs from the terminal
+| Option | Default | Purpose |
+| --- | --- | --- |
+| `-o`, `--output` | Downloads directory | Directory for saved articles |
+| `-j`, `--concurrency` | `8` | Concurrent download/extraction workers |
+| `--per-host` | `2` | Simultaneous connections per host |
+| `--timeout` | `30` | Seconds per HTTP attempt |
+| `--retries` | `2` | Retries for transient HTTP and connection failures |
+| `--keep-html` | Off | Preserve extracted HTML instead of plain text |
+| `--no-nlp` | Off | Skip generated keywords for faster processing |
+| `-u`, `--disable-verify-ssl` | Off | Disable TLS certificate verification |
 
-```bash
-newspaper3kli https://hello.world/article/2020 \
-    https://hello.world/article/2019
-```
+## Output
 
-### Reading from a txt file
+The default directory is `$XDG_DOWNLOAD_DIR/newspaper3k`, falling back to
+`~/Downloads/newspaper3k`. Each article produces a UTF-8 pair:
 
-TXT is the simplest file format for reading with Newspaper3kli.
+- `<title>-<url-hash>.html`: extracted text, or HTML with `--keep-html`.
+- `<title>-<url-hash>.json`: title, keywords, authors, image URLs, description,
+  publication date, and source URL.
 
-Assuming the txt file has the following content (line delimited URLs):
+URL hashes prevent identical titles from overwriting each other. Responses are
+limited to 10 MiB. No NLTK models or image downloads are required.
 
-```text
-https://hello.world/article/2020
-https://hello.world/article/2019
-```
-
-```bash
-cat /path/to/this/file.txt | newspaper3kli
-```
-
-### Reading from a CSV file
-
-CSV parsing will depend in a tool like `awk` or `cut` to split the columns.
-
-Content sample
-
-```csv
-url,tags,date
-https://hello.world/article/2020,some|thing,2020-01-01T00:00:00
-https://hello.world/article/2019,some|thing,2019-01-01T00:00:00
-```
-
-Processing
-
-```bash
-# note that $1 corresponds to the URLs column number, change to yours
-cat /path/to/this/file.csv | awk -F, '{ print $1 }' | newspaper3kli
-```
-
-For any other character-delimited content, simple change from -F, (comma)
-to the desired format, e.g.: -F\t for TSV
-
-### Output path
-
-When no path is specified through `--output` parameter, the default path is
-the `output` directory inside Newspaper3kli's installation directory.
-
-Files are created according to Article's name, and are stored in pairs:
-- JSON for metadata;
-- HTML for content;
+Exit codes: `0` for success, `1` if any article fails, `2` for invalid arguments,
+and `130` when interrupted. Other articles continue after a failed URL.
 
 ## Credits
 
-Thanks to [dsynkov](https://github.com/dsynkov/) for the work at
-[newspaper-bulk](https://github.com/dsynkov/newspaper-bulk). The source of
-inspiration and some code for this project.
+Built with [Newspaper4k](https://github.com/AndyTheFactory/newspaper4k) and
+[aiohttp](https://docs.aiohttp.org/en/stable/). Originally inspired by
+[dsynkov's newspaper-bulk](https://github.com/dsynkov/newspaper-bulk).

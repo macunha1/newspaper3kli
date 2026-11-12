@@ -1,0 +1,4 @@
+include .python-version
+include uv.lock
+recursive-include tests *.py
+recursive-include scripts *.py

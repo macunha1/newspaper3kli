@@ -142,3 +142,7 @@ cython_debug/
 
 # Newspaper3kli
 output/
+
+# Local tooling
+.serena/
+.ruff_cache/
